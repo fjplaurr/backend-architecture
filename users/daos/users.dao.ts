@@ -2,6 +2,7 @@ import { CreateUserDto } from "../dto/create.user.dto";
 import { PatchUserDto } from "../dto/patch.user.dto";
 import { PutUserDto } from "../dto/put.user.dto";
 import mongooseService from "../../common/services/mongoose.service";
+import { PermissionFlag } from "../../common/middleware/common.permissionflag.enum";
 
 import shortid from "shortid";
 import debug from "debug";
@@ -36,7 +37,7 @@ class UsersDao {
     const user = new this.User({
       ...userFields,
       _id: userId,
-      permissionFlags: 1,
+      permissionFlags: PermissionFlag.FREE_PERMISSION,
     });
     await user.save();
     return userId;
@@ -69,6 +70,12 @@ class UsersDao {
 
   async removeUserById(userId: string) {
     return this.User.deleteOne({ _id: userId }).exec();
+  }
+
+  async getUserByEmailWithPassword(email: string) {
+    return this.User.findOne({ email })
+      .select("_id email permissionFlags +password")
+      .exec();
   }
 }
 
