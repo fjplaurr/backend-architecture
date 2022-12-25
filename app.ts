@@ -9,6 +9,7 @@ import * as winston from "winston";
 import * as expressWinston from "express-winston";
 import cors from "cors";
 import debug from "debug";
+import helmet from "helmet";
 
 import { CommonRoutesConfig } from "./common/common.routes.config";
 import { UsersRoutes } from "./users/users.routes.config";
@@ -22,6 +23,7 @@ const debugLog: debug.IDebugger = debug("app");
 
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
 
 const loggerOptions: expressWinston.LoggerOptions = {
   transports: [new winston.transports.Console()],
